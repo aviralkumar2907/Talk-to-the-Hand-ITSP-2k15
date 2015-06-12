@@ -1,0 +1,59 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/layout_home"
+    >
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/mimg"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="This Project 'Talk To The Hand' is a result of the Institute Technical Summer Projects(ITSP) Programme
+        , IIT Bombay. This app uses the American Sign Language "
+        android:id="@+id/txtView"/>
+
+
+
+    <SlidingDrawer
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:background="@drawable/bgd2"
+        android:id="@+id/drawer"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:handle="@+id/handle"
+        android:content="@+id/content">
+        <ImageView
+            android:contentDescription="@string/normal_tray"
+            android:id="@id/handle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/tray_handle_normal"/>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/content"
+            android:background="#d0417e">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:id="@+id/mText"
+                android:layout_centerHorizontal="true"
+                android:padding="20dp"
+                android:textColor="#ffffff"/>
+
+        </RelativeLayout>
+    </SlidingDrawer>
+
+ </RelativeLayout>
