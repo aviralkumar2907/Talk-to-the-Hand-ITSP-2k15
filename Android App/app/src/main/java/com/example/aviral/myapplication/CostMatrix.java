@@ -37,6 +37,10 @@ public class CostMatrix {
     public void fillCostMatrix(){
         for (int i=0; i<a.length; i++){
             Log.i("TAG", "inside fillCOstMatrix");
+
+            Log.i("Tag-a", Integer.toString(a[i].acc[0]));
+            Log.i("Tag-a", Integer.toString(a[i].acc[1]));
+            Log.i("Tag-a", Integer.toString(a[i].acc[2]));
             for(int j=0; j<b.length; j++){
                 costMatrix[i][j]= a[i].getEulerDistance(b[j]);
                 Log.i("TAG-cost", Double.toString(costMatrix[i][j]));

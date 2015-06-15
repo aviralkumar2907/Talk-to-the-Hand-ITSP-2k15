@@ -48,16 +48,23 @@ public class BluetoothTTS extends Fragment implements SpellCheckerSession.SpellC
         private static final UUID MY_UUID =
                 UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
         private static String address = "98:D3:31:60:15:97";
-        TextView txtReceived;
-        Button TTSbtn;
+        TextView txtReceived, txtraw;
+        Button TTSbtn, StartBtn, startGes;
         private StringBuilder data = new StringBuilder();
+        private StringBuilder dataDTW = new StringBuilder(62);
         private String data1 = new String("");
         TextToSpeech ttsObj;
         private SpellCheckerSession mScs;
         String withSpaces, newone= "";
-        DTW[][] template =new DTW[][] { {new DTW(101, 108, 108), new DTW(111, 119, 111), new DTW (114, 108, 100)},
-                {new DTW(101, 101, 101), new DTW(102, 102, 102), new DTW(34, 34, 35)}};
+        DTW[] template =new DTW[]  {new DTW(316/4, 286/4, 289/4), new DTW(316/4, 284/4, 290/4), new DTW (316/4, 284/4, 290/4), new DTW(315/4, 283/4, 289/4),
+                        new DTW(314/4,284/4, 288/4), new DTW(302/4, 289/4, 295/4), new DTW(297/4, 292/4, 298/4), new DTW(295/4, 289/4, 298/4), new DTW(292/4, 289/4, 300/4),
+                        new DTW(307/4, 306/4, 317/4), new DTW(359/4, 363/4, 257/4), new DTW(358/4, 362/4, 238/4), new DTW(337/4, 379/4, 290/4), new DTW(331/4, 378/4, 281/4),
+                        new DTW(332/4, 387/4, 284/4), new DTW(332/4, 387/4, 284/4), new DTW(333/4, 382/4, 282/4), new DTW(331/4, 382/4, 284/4), new DTW(332/4,382/4, 284/4),
+                        new DTW(331/4, 382/4, 284/4)};
+
+        DTW mean = new DTW(310/4, 290/4, 287/4);
         String[] corresponding = {"z", "j"};
+    int flag=0;
 
         @Override
         public void onGetSuggestions(final SuggestionsInfo[] arg0) {
@@ -104,6 +111,9 @@ public class BluetoothTTS extends Fragment implements SpellCheckerSession.SpellC
 
             txtReceived = (TextView) rootview.findViewById(R.id.mText);
             TTSbtn = (Button)rootview.findViewById(R.id.btn);
+            //StartBtn = (Button) rootview.findViewById(R.id.start);
+           // startGes = (Button) rootview.findViewById(R.id.start2);
+            txtraw = (TextView) rootview.findViewById((R.id.txt2));
             ttsObj = new TextToSpeech(getActivity().getApplicationContext(),new TextToSpeech.OnInitListener(){
 
                 @Override
@@ -119,26 +129,52 @@ public class BluetoothTTS extends Fragment implements SpellCheckerSession.SpellC
                 @Override
                 public void handleMessage (Message msg){
                     if(msg.what == handlerState){
+
                         byte[] buff = (byte[])msg.obj;
                         Log.i("TAG:,", buff.length+"");
                         int i;
                         for ( i=0; buff[i]!=0; i++);
+                           Log.i("Handler", "Got here");
 
                         String read = new String(buff, 0, i);
-                        if (read.length() >1 && read.charAt(0) == ' ') {
-                            Log.i("TAG", "Hi dude");
-                            DTW[] accelerometer = findDTWfromData(read);
-                            Log.i("TAG", "hey");
-                            for (i = 0; i < template.length; i++) {
-                                Log.i("TAG", "Entered the loop");
-                                DTWMatrix Matrix = new DTWMatrix(accelerometer, template[i]);   //template z and j separately
-                                Log.i("TAG", "not doing thee DTWMatrix");
-                                Matrix.fillDTWMatrix();
-                                Log.i("TAG", "DTW Matrix filled ");
-                                if (Matrix.findAndCheckMinPath())
-                                    data.append(corresponding[i]);
+                        if (read.length() >=1 && read.charAt(0) == ' ' || flag==1) {
 
+                            Log.i("TAG", "Hi dude");
+                             if(read.charAt(read.length()-1)== '&') {
+                                 dataDTW.append(read);
+                                 Log.i("RAG", dataDTW.toString());
+                                 flag = 0;
+                                 DTW[] temp = findDTWfromData(dataDTW.toString());
+                                 DTW[] accelerometer = finalDTWarray(temp);
+                                 DTW[] ftemplate = finalDTWarray(template);
+                                 Log.i("TAG", "hey");
+                                 //for (i = 0; i < template.length; i++) {
+                                 { Log.i("TAG", "Entered the loop");
+                                     DTWMatrix Matrix = new DTWMatrix(accelerometer, ftemplate);   //template z and j separately
+                                     Log.i("TAG", "not doing thee DTWMatrix");
+                                     Matrix.fillDTWMatrix();
+                                     Log.i("TAG", "DTW Matrix filled ");
+                                     if (Matrix.findAndCheckMinPath())
+                                         data.append("j");
+                                     else data.append("i");
+                                     dataDTW.delete(0,dataDTW.length());
+
+                                 }
+                             }
+                            else if(read.length() >=1 && read.charAt(0) == ' '){
+                                dataDTW.append(read);
+                                Log.i("FIrst", "first case");
+                                flag=1;
                             }
+                            else if(read.charAt(read.length()-1)!='&') {
+                                dataDTW.append(read);
+                                Log.i("Second","Second case");
+                                flag=1;
+                            }
+
+
+
+                            else {}
                         }
 
 
@@ -147,7 +183,10 @@ public class BluetoothTTS extends Fragment implements SpellCheckerSession.SpellC
                             data.append(read);
                             data1 = read;
                         }
+
                         int eol = data.indexOf(" ");
+                        txtraw.setText(data.toString());
+
                     /*if(eol>0){
                         String dataprint = data.substring(0, eol);*/
 
@@ -177,6 +216,12 @@ public class BluetoothTTS extends Fragment implements SpellCheckerSession.SpellC
                 }
             });
 
+            /*StartBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mThread.write("x");
+                }
+            });*/
 
        /* mhandler = new Handler() {
             @Override
@@ -285,13 +330,46 @@ public class BluetoothTTS extends Fragment implements SpellCheckerSession.SpellC
 
         public DTW[] findDTWfromData(String input){
             DTW[] temp = new DTW[input.length()/3];
-            for(int i=1; i<temp.length; i+=3){
+            int flag=0;
+            for(int i=1; i<input.length()-1 ; ){
                 DTW a;
-                a = new DTW((int)input.charAt (i), (int)input.charAt(i+1), (int)input.charAt(i+2));
+                if(input.charAt(i)==' ') {i++; flag= 1; continue;}
+
+                Log.i("Value of charAt", Integer.toString((int)input.charAt(i)));
+                a = new DTW((int)input.charAt (i)>0 ? (int)input.charAt(i): 255+ (int)input.charAt(i), (int)input.charAt (i+1)>0 ? (int)input.charAt(i+1): 255+ (int)input.charAt(i+1), (int)input.charAt (i+2)>0 ? (int)input.charAt(i+2): 255+ (int)input.charAt(i+2));
+                Log.i("Tag-a", Integer.toString(a.acc[0]));
+                Log.i("Tag-a", Integer.toString(a.acc[1]));
+                Log.i("Tag-a", Integer.toString(a.acc[2]));
                 temp[i/3] = a;
+                i+=3;
             }
             Log.i("Temp-findDTWfromData", Integer.toString(temp.length));
             return temp;
+
+
+        }
+
+
+        public DTW[] finalDTWarray(DTW[] a){
+            //DTW[] temp = new DTW[]();
+            int startpos=0, endpos=a.length-1;
+            for(int i=0; i<a.length; i++){
+                if(a[i].acc[0] - mean.acc[0] > 6 || a[i].acc[1] - mean.acc[1] > 6 || a[i].acc[2] - mean.acc[2] > 6){
+                    startpos = i;
+                    break;
+                }
+            }
+            Log.i("finalDTWArray", Integer.toString(startpos));
+            for(int i= a.length-1; i>=0; i--){
+                if(a[i].acc[0] - mean.acc[0] > 6 || a[i].acc[1] - mean.acc[1] > 6 || a[i].acc[2] - mean.acc[2] > 6){
+                    endpos = i;
+                    break;
+                }
+            }
+            DTW[] temp = new DTW[endpos-startpos+1];
+            System.arraycopy(a, startpos, temp, 0, endpos-startpos+1);
+            return temp;
+
         }
     }
 

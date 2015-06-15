@@ -1,0 +1,106 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/layout_home"
+    >
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/mimg"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="We are students of IIT Bombay. This project Talk to the Hand is a onderful creation of the ITSP programme running in the institute. This app uses the American Sign Language and converts any standard gestures to speech, thereby bringing the dumb people closer to the mainstream."
+        android:id="@+id/txtView"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:textSize="14dp"
+        />
+
+
+
+    <SlidingDrawer
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:background="@drawable/bgd2"
+        android:id="@+id/drawer"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:handle="@+id/handle"
+        android:content="@+id/content">
+        <ImageView
+            android:contentDescription="@string/normal_tray"
+            android:id="@id/handle"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/instructions"/>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/content"
+            android:background="#d0417e">
+
+            <!--<ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/instructions"
+                android:id="@+id/instruct"
+                />  -->
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="INSTRUCTIONS"
+                android:id="@+id/mText"
+                android:layout_centerHorizontal="true"
+                android:padding="20dp"
+                android:textColor="#ffffff"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/mText1"
+                android:text="1. To Start, switch on thr bluetooth module and then switch on the app "
+                android:layout_below="@id/mText"
+                android:padding="10dp"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2. To start gestures,click on the start gesture button and perform the required gesture "
+                android:layout_below="@id/mText1"
+                android:id="@+id/mText2"
+                android:padding="10dp"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2. On completing the gesture press the Speak button and you can see the grammatically correct text in the space above the Speak button"
+                android:layout_below="@id/mText2"
+                android:id="@+id/mText3"
+                android:padding="10dp"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4. In the textView above the Start Gesture button, you can see the Raw data being received as the gestures are done"
+                android:layout_below="@id/mText3"
+                android:padding="10dp"/>
+
+        </RelativeLayout>
+    </SlidingDrawer>
+
+ </RelativeLayout>

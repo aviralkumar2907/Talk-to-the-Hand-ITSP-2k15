@@ -10,9 +10,9 @@ public class DTW {
 
     public DTW(int a, int b, int c) {
         acc = new int[3];
-        acc[0] = a + 200;
-        acc[1] = b + 200;
-        acc[2] = c + 200;
+        acc[0] = a*4;
+        acc[1] = b*4;
+        acc[2] = c*4;
     }
 
     public double getEulerDistance(DTW a) {

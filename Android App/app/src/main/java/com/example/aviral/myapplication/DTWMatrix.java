@@ -1,12 +1,14 @@
 package com.example.aviral.myapplication;
 
 import android.util.Log;
+import android.widget.TextView;
 
 /**
  * Created by aviral on 6/8/15.
  */
 public class DTWMatrix extends CostMatrix {
     private double[][] DTWmatrix;
+
 
     public DTWMatrix(DTW[] x, DTW[] y ){
         super( x, y);
@@ -66,58 +68,68 @@ public class DTWMatrix extends CostMatrix {
 
     }
 
-    public boolean findAndCheckMinPath(){
-        int flag=0;
-        int i=a.length-1,j=b.length-1;
-        while(i>=0&&j>=0)                                                         //set min path to zero
+    public boolean findAndCheckMinPath() {
+        int flag = 0;
+        int i = a.length - 1, j = b.length - 1;
+        Log.i("TAG-findandCheckMinPath", Integer.toString(i));
+        Log.i("TAG-findandCheckMinPath", Integer.toString(j));
+        int countx = 0, county = 0;
+        int win_size = 2;
+        boolean win;
+
+        double rat = (double) a.length / b.length;
+
+        while (i > 0 && j > 0)                                                         //set min path to zero
         {
-            if(DTWmatrix[i-1][j]<DTWmatrix[i-1][j-1])
-            {
-                if(DTWmatrix[i-1][j]<DTWmatrix[i][j-1])
-                {
-                    DTWmatrix[i][j]=0;
+            if (DTWmatrix[i - 1][j] < DTWmatrix[i - 1][j - 1]) {
+                if (DTWmatrix[i - 1][j] < DTWmatrix[i][j - 1]) {
+                    DTWmatrix[i][j] = 0;
                     i--;
-                    if ( Math.abs(j-i) > 5)
-                        flag=1;
-                }
-                else
-                {
-                    DTWmatrix[i][j]=0;
+                    county++;
+                    countx = 0;
+                } else {
+                    DTWmatrix[i][j] = 0;
                     j--;
 
-                    if(Math.abs(j-i) > 5)
-                        flag=1;
+                    countx++;
+                    county = 0;
                 }
 
-            }
-            else if(DTWmatrix[i-1][j-1]<DTWmatrix[i-1][j])
-            {
-                if(DTWmatrix[i-1][j-1]<DTWmatrix[i][j-1])
-                {
-                    DTWmatrix[i][j]=0;
-                    i--;j--;
-                    if(Math.abs(j-i) > 5)
-                        flag=1;
-                }
-                else
-                {
-                    DTWmatrix[i][j]=0;
+            } else if (DTWmatrix[i - 1][j - 1] < DTWmatrix[i - 1][j]) {
+                if (DTWmatrix[i - 1][j - 1] < DTWmatrix[i][j - 1]) {
+                    DTWmatrix[i][j] = 0;
+                    i--;
                     j--;
-                    if(Math.abs(j-i) > 5)
-                        flag=1;
+                    county = 0;
+                    countx = 0;
+                } else {
+                    DTWmatrix[i][j] = 0;
+                    j--;
+                    county++;
+                    countx = 0;
                 }
+            } else {
+                DTWmatrix[i][j] = 0;
+                i--;
+                j--;
+                countx = 0;
+                county = 0;
             }
-            else
-            {
-                DTWmatrix[i][j]=0;
-                i--;j--;
-                if(Math.abs(j-i) > 5)
-                    flag=1;
-            }
-        }
-        if (flag==1)
-            return false;
 
+        if (countx > 4 || county > 4) {
+            win = true;
+            if (win==true) break;
+            flag = 1;
+        } else win = false;
+
+        if (Math.abs(i - rat * j) > Math.sqrt(1 + rat * rat) * win_size) {
+            win = true;
+            flag = 1;
+            if(win==true) break;
+        } else win = false;
+    }
+        Log.i("findAndCHeckPathsult", Boolean.toString(win));
+        if(win==true) return  false;
         else
             return true;
     }
